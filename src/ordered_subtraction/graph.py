@@ -15,27 +15,28 @@ def next_number(number: int) -> int:
 
 
 NUM_DIGITS = 8
-MAX_SAMPLES = 100_000_000
 
 
 # Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
-if MAX_SAMPLES < len(start_numbers):
-    start_numbers = np.random.choice(start_numbers, MAX_SAMPLES, replace=False)
 
 # Generate graph edges
-edges = defaultdict(lambda: {"weight": 0})
+edges = defaultdict(int)
 for start_number in tqdm(start_numbers):
-    number = start_number
-    history = [start_number]
-    while history[-1] not in history[:-1]:
-        new_number = next_number(number)
-        edges[(number, new_number)]["weight"] += 1
-        history.append(new_number)
-        number = new_number
+    history = set([start_number])
+    number, new_number = start_number, next_number(start_number)
+    edges[(number, new_number)] += 1
+    if edges[(number, new_number)] > 1:
+        break
+    while new_number not in history:
+        history.add(new_number)
+        number, new_number = new_number, next_number(new_number)
+        edges[(number, new_number)] += 1
+        if edges[(number, new_number)] > 1:
+            break
 
 # Remove single use edges
-edges = {k: v for k, v in edges.items() if v["weight"] > 1}
+edges = [(u, v, {"weight": weight}) for (u, v), weight in edges.items() if weight > 1]
 
 # Create graph
 filtered_graph = nx.DiGraph()

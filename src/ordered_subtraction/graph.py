@@ -25,6 +25,9 @@ all_edges = defaultdict(int)
 for start_number in tqdm(start_numbers):
     edge = start_number, next_number(start_number)
     all_edges[edge] += 1
+    if all_edges[edge] > 1:
+        edges.add(edge)
+        break
     while all_edges[edge] <= 1:
         edge = (edge[1], next_number(edge[1]))
         all_edges[edge] += 1

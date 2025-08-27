@@ -14,29 +14,29 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 8
+NUM_DIGITS = 10
 
 
 # Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
 
 # Generate graph edges
-edges = defaultdict(int)
+edges = set()
+all_edges = defaultdict(int)
 for start_number in tqdm(start_numbers):
     history = set([start_number])
     number, new_number = start_number, next_number(start_number)
-    edges[(number, new_number)] += 1
-    if edges[(number, new_number)] > 1:
+    all_edges[(number, new_number)] += 1
+    if all_edges[(number, new_number)] > 1:
+        edges.add((number, new_number))
         break
     while new_number not in history:
         history.add(new_number)
         number, new_number = new_number, next_number(new_number)
-        edges[(number, new_number)] += 1
-        if edges[(number, new_number)] > 1:
+        all_edges[(number, new_number)] += 1
+        if all_edges[(number, new_number)] > 1:
+            edges.add((number, new_number))
             break
-
-# Remove single use edges
-edges = [(u, v, {"weight": weight}) for (u, v), weight in edges.items() if weight > 1]
 
 # Create graph
 filtered_graph = nx.DiGraph()

@@ -14,8 +14,7 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 10
-
+NUM_DIGITS = 8
 
 # Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
@@ -24,19 +23,12 @@ start_numbers = range(10**NUM_DIGITS)
 edges = set()
 all_edges = defaultdict(int)
 for start_number in tqdm(start_numbers):
-    history = set([start_number])
-    number, new_number = start_number, next_number(start_number)
-    all_edges[(number, new_number)] += 1
-    if all_edges[(number, new_number)] > 1:
-        edges.add((number, new_number))
-        break
-    while new_number not in history:
-        history.add(new_number)
-        number, new_number = new_number, next_number(new_number)
-        all_edges[(number, new_number)] += 1
-        if all_edges[(number, new_number)] > 1:
-            edges.add((number, new_number))
-            break
+    edge = start_number, next_number(start_number)
+    all_edges[edge] += 1
+    while all_edges[edge] <= 1:
+        edge = (edge[1], next_number(edge[1]))
+        all_edges[edge] += 1
+    edges.add(edge)
 
 # Create graph
 filtered_graph = nx.DiGraph()

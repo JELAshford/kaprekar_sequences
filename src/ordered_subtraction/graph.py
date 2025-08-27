@@ -1,3 +1,4 @@
+from collections import defaultdict
 import matplotlib.pylab as plt
 from functools import cache
 import networkx as nx
@@ -13,50 +14,37 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 7
-MAX_SAMPLES = 10_000_000
+NUM_DIGITS = 8
+MAX_SAMPLES = 100_000_000
 
 
-# Generate graph
+# Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
 if MAX_SAMPLES < len(start_numbers):
     start_numbers = np.random.choice(start_numbers, MAX_SAMPLES, replace=False)
 
-graph = nx.DiGraph()
+# Generate graph edges
+edges = defaultdict(lambda: {"weight": 0})
 for start_number in tqdm(start_numbers):
     number = start_number
     history = [start_number]
     while history[-1] not in history[:-1]:
         new_number = next_number(number)
-        graph.add_edge(
-            number,
-            new_number,
-            weight=graph[number][new_number]["weight"] + 1
-            if graph.has_edge(number, new_number)
-            else 1,
-        )
+        edges[(number, new_number)]["weight"] += 1
         history.append(new_number)
         number = new_number
 
-
 # Remove single use edges
-filtered_graph = graph.copy()
-edges = list(filtered_graph.edges(data=True))
-for edge in edges:
-    if edge[2]["weight"] < 2:
-        filtered_graph.remove_edge(edge[0], edge[1])
+edges = {k: v for k, v in edges.items() if v["weight"] > 1}
 
-# Remove consquently unconnected nodes
-isolated_nodes = list(nx.isolates(filtered_graph))
-filtered_graph.remove_nodes_from(isolated_nodes)
-
-# Identify cycles
+# Create graph
+filtered_graph = nx.DiGraph()
+filtered_graph.add_edges_from(edges)
 cycles = list(nx.simple_cycles(filtered_graph))
 cycle_nodes = set(node for cycle in cycles for node in cycle)
 cycle_edges = set(
     (cycle[i], cycle[(i + 1) % len(cycle)]) for cycle in cycles for i in range(len(cycle))
 )
-
 
 # Create styling based on cycles
 node_colours = ["red" if node in cycle_nodes else "lightgrey" for node in filtered_graph.nodes()]
@@ -66,11 +54,7 @@ cycle_labels = {node: str(node) for node in cycle_nodes}
 
 # Visualise
 fig, ax = plt.subplots(1, 1, figsize=(12, 12))
-sub_layout = nx.nx_agraph.graphviz_layout(
-    filtered_graph,
-    prog="dot",
-    args="-Grankdir=LR",
-)
+sub_layout = nx.nx_agraph.graphviz_layout(filtered_graph, prog="dot", args="-Grankdir=LR")
 nx.draw(
     ax=ax,
     G=filtered_graph,

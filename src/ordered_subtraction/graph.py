@@ -1,7 +1,7 @@
 import matplotlib.pylab as plt
 from functools import cache
+from tqdm import trange
 import networkx as nx
-from tqdm import tqdm
 
 
 @cache
@@ -14,12 +14,9 @@ def next_number(number: int) -> int:
 
 NUM_DIGITS = 4
 
-# Prepare start numbers
-start_numbers = range(10**NUM_DIGITS)
-
 # Generate graph edges
 edges, nodes = set(), set()
-for start_number in tqdm(start_numbers):
+for start_number in trange(10**NUM_DIGITS):
     current, next = start_number, next_number(start_number)
     nodes.add(next)
     while current not in nodes:

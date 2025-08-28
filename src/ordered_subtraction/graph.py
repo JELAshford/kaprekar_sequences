@@ -1,9 +1,7 @@
-from collections import defaultdict
 import matplotlib.pylab as plt
 from functools import cache
 import networkx as nx
 from tqdm import tqdm
-import numpy as np
 
 
 @cache
@@ -14,23 +12,19 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 8
+NUM_DIGITS = 9
 
 # Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
 
 # Generate graph edges
-edges = set()
-all_edges = defaultdict(int)
+edges, nodes = set(), set()
 for start_number in tqdm(start_numbers):
     edge = start_number, next_number(start_number)
-    all_edges[edge] += 1
-    if all_edges[edge] > 1:
-        edges.add(edge)
-        break
-    while all_edges[edge] <= 1:
+    nodes.add(edge[1])
+    while edge[0] not in nodes:
         edge = (edge[1], next_number(edge[1]))
-        all_edges[edge] += 1
+        nodes.add(edge[1])
     edges.add(edge)
 
 # Create graph

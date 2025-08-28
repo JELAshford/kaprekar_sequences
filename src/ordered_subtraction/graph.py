@@ -12,7 +12,7 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 9
+NUM_DIGITS = 4
 
 # Prepare start numbers
 start_numbers = range(10**NUM_DIGITS)
@@ -20,12 +20,12 @@ start_numbers = range(10**NUM_DIGITS)
 # Generate graph edges
 edges, nodes = set(), set()
 for start_number in tqdm(start_numbers):
-    edge = start_number, next_number(start_number)
-    nodes.add(edge[1])
-    while edge[0] not in nodes:
-        edge = (edge[1], next_number(edge[1]))
-        nodes.add(edge[1])
-    edges.add(edge)
+    current, next = start_number, next_number(start_number)
+    nodes.add(next)
+    while current not in nodes:
+        current, next = (next, next_number(next))
+        nodes.add(next)
+    edges.add((current, next))
 
 # Create graph
 filtered_graph = nx.DiGraph()

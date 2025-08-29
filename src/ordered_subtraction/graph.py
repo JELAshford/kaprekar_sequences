@@ -12,7 +12,7 @@ def next_number(number: int) -> int:
     return max_num - min_num
 
 
-NUM_DIGITS = 4
+NUM_DIGITS = 7
 
 # Generate graph edges
 edges, nodes = set(), set()
@@ -29,9 +29,7 @@ filtered_graph = nx.DiGraph()
 filtered_graph.add_edges_from(edges)
 cycles = list(nx.simple_cycles(filtered_graph))
 cycle_nodes = set(node for cycle in cycles for node in cycle)
-cycle_edges = set(
-    (cycle[i], cycle[(i + 1) % len(cycle)]) for cycle in cycles for i in range(len(cycle))
-)
+cycle_edges = set((c[i], c[(i + 1) % len(c)]) for c in cycles for i in range(len(c)))
 
 # Create styling based on cycles
 node_colours = ["red" if node in cycle_nodes else "lightgrey" for node in filtered_graph.nodes()]

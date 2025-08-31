@@ -21,12 +21,20 @@ def digit_signature(number, num_digits):
 def plot_equivalence_class_size(n_values=range(1, 50)):
     equiv_classes = [equivalence_classes(n) for n in n_values]
     total_nums = [10**n for n in n_values]
-    reduction_factor = [total / equiv for total, equiv in zip(total_nums, equiv_classes)]
+    reduction_factor = [
+        total / equiv for total, equiv in zip(total_nums, equiv_classes)
+    ]
 
     # Visualization
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
     ax1.semilogy(n_values, total_nums, "b-o", label="Total numbers (10^N)", linewidth=2)
-    ax1.semilogy(n_values, equiv_classes, "r-o", label="Equivalence classes C(N+9,9)", linewidth=2)
+    ax1.semilogy(
+        n_values,
+        equiv_classes,
+        "r-o",
+        label="Equivalence classes C(N+9,9)",
+        linewidth=2,
+    )
     ax1.set_xlabel("Number of digits (N)")
     ax1.set_ylabel("Count (log scale)")
     ax1.set_title("Total Numbers vs Equivalence Classes")
@@ -49,7 +57,9 @@ def distribution_of_classes_across_number_range(num_digits=6):
     sample_sizes = [0.01, 0.05, 0.1, 0.2, 0.5, 1.0]
 
     print("Equivalence Class Coverage Analysis:")
-    print("Sample %    Numbers Checked    Unique Signatures    Total Possible    Coverage %")
+    print(
+        "Sample %    Numbers Checked    Unique Signatures    Total Possible    Coverage %"
+    )
     print("-" * 75)
 
     total_possible = equivalence_classes(num_digits)
@@ -167,10 +177,20 @@ def reachable_equivalence_classes(n_values=range(3, 17)):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
     ax1.plot(
-        n_values, first_step_reductions, "b-o", label="After 1 Step", linewidth=2, markersize=8
+        n_values,
+        first_step_reductions,
+        "b-o",
+        label="After 1 Step",
+        linewidth=2,
+        markersize=8,
     )
     ax1.plot(
-        n_values, second_step_reductions, "r-o", label="After 2 Steps", linewidth=2, markersize=8
+        n_values,
+        second_step_reductions,
+        "r-o",
+        label="After 2 Steps",
+        linewidth=2,
+        markersize=8,
     )
     ax1.set_xlabel("Number of Digits (N)")
     ax1.set_ylabel("Reduction Factor")
@@ -238,7 +258,9 @@ def trajectory_analysis(num_digits=6, num_steps=3):
     axes = axes.flatten()
     colors = ["blue", "red", "green", "purple"]
     for ax, col, (_, input_range) in zip(axes, colors, ranges_to_analyze.items()):
-        trajectories = track_trajectories(input_range, num_digits, num_steps, max_trajectories=500)
+        trajectories = track_trajectories(
+            input_range, num_digits, num_steps, max_trajectories=500
+        )
         for traj in trajectories:
             ax.plot(range(len(traj)), traj, alpha=0.3, color=col, linewidth=0.5)
     plt.tight_layout()

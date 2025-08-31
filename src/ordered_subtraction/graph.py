@@ -31,7 +31,9 @@ def next_number(number: int) -> int:
 # Generate graph edges
 edges, nodes = set(), set()
 num_starts = comb(NUM_DIGITS + 9, 9)
-for start_number in tqdm(generate_canonical_representatives(NUM_DIGITS), total=num_starts):
+for start_number in tqdm(
+    generate_canonical_representatives(NUM_DIGITS), total=num_starts
+):
     sorted_start = to_canonical(start_number)
     current, next = sorted_start, next_number(sorted_start)
     nodes.add(next)
@@ -70,8 +72,12 @@ cycle_nodes = set(node for cycle in cycles for node in cycle)
 cycle_edges = set((c[i], c[(i + 1) % len(c)]) for c in cycles for i in range(len(c)))
 
 # Create styling based on cycles
-node_colours = ["red" if node in cycle_nodes else "lightgrey" for node in filtered_graph.nodes()]
-edge_colors = ["red" if (u, v) in cycle_edges else "lightgrey" for u, v in filtered_graph.edges()]
+node_colours = [
+    "red" if node in cycle_nodes else "lightgrey" for node in filtered_graph.nodes()
+]
+edge_colors = [
+    "red" if (u, v) in cycle_edges else "lightgrey" for u, v in filtered_graph.edges()
+]
 cycle_labels = {node: str(node).zfill(NUM_DIGITS) for node in cycle_nodes}
 
 

@@ -97,5 +97,5 @@ nx.draw(
     font_color="black",
     labels=cycle_labels,
 )
-plt.savefig(f"../../out/{NUM_DIGITS}-long_numbers.png")
+plt.savefig(f"out/{NUM_DIGITS}-long_numbers.png")
 plt.show()

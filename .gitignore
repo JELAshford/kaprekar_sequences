@@ -9,5 +9,8 @@ wheels/
 # Virtual environments
 .venv
 
+# Mac stuff
+.DS_Store
+
 # Output files
 out/
